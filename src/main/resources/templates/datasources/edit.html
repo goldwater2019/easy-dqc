@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}">标题</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<strong th:text="${title}">标题</strong>
+<form th:action="@{/datasource}" th:object="${datasource}" method="post">
+    数据源名称: <input type="text" name="name" th:value="*{name}">
+    <br/>
+    连接字符串: <input type="text" name="jdbcUrl" th:value="*{jdbcUrl}">
+    <br/>
+    用户名：<input type="text" name="user" th:value="*{username}">
+    <br/>
+    密码：<input type="text" name="password" th:value="*{password}">
+    <br/>
+    <button type="submit">提交</button>
+    <button type="reset">重置</button>
+</form>
+<!--<table>-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th class="am-hide-sm-only">id</th>-->
+<!--        <th>用户名</th>-->
+<!--        <th>姓名</th>-->
+<!--        <th class="am-hide-sm-only">电话</th>-->
+<!--        <th class="am-hide-sm-only">邮箱</th>-->
+<!--        <th class="am-hide-sm-only">是否可用</th>-->
+<!--        <th>操作</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr th:each="user : ${page.content}">-->
+<!--        <td th:text="${user.id}">id</td>-->
+<!--        <td th:text="${user.username}">用户名</td>-->
+<!--        <td th:text="${user.name}">姓名</td>-->
+<!--        <td th:text="${user.phone}">电话</td>-->
+<!--        <td th:text="${user.email}">邮箱</td>-->
+<!--        <td th:switch="${user.enabled}">-->
+<!--            <span th:case="true">可用</span><span th:case="false">不可用</span>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--            <button>修改</button>-->
+<!--            <button>删除</button>-->
+<!--        </td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+</body>
+</html>
