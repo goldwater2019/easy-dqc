@@ -14,7 +14,9 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
+@Data
 public class DataSource {
+    public String type;
     public String name;
     public String jdbcUrl;
     public String username;
