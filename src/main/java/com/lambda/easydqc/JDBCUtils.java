@@ -24,16 +24,25 @@ public class JDBCUtils {
         arg2key.put("--query", "query");
         arg2key.put("-cw", "columnWidth");
         arg2key.put("--column_width", "columnWidth");
+        arg2key.put("-i", "initial");
+        arg2key.put("--initial", "initial");
     }
 
     public static void printHelp() {
-        String help =                               "-h; --help                         print user guide";
-        String check =                              "-ck; --check                       check catalog availability";
-        String catalog =                            "-cn; --catalog_name                specify catalog name";
-        String conf =                               "-cp; --conf_path                   if the config path is not included in class path, " +
-                                                                                        "specify catalog config directory/path";
-        String query =                              "-q; --query                        sql to query";
-        String lineWidth =                          "-cw; --column_width                column width";
+        String help                 =       "-h; --help                         print user guide";
+        String check                =       "-ck; --check                       check catalog availability";
+        String catalog              =       "-cn; --catalog_name                specify catalog name";
+        String conf                 =       "-cp; --conf_path                   if the config path is not included in class path, " +
+                                                                                "specify catalog config directory/path";
+        String query                =       "-q; --query                        sql to query";
+        String lineWidth            =       "-cw; --column_width                column width";
+
+        // TODO 描述catalog
+        String descCatalog          =       "-dc; --describe_catalog            describe catalog. mysql -> databases;" +
+                                                                                "pg -> databases; oracle -> users";
+
+        // TODO init sqlite数据库
+        String initial              =       "-i; --initial                      initial sqlite db with a specified path";
 
 
         System.out.println(help);
@@ -42,6 +51,7 @@ public class JDBCUtils {
         System.out.println(conf);
         System.out.println(query);
         System.out.println(lineWidth);
+        System.out.println(initial);
     }
 
     public static Properties parseArgs(String[] args) {

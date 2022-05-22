@@ -1,5 +1,5 @@
 spring:
   thymeleaf:
     cache: false
-    mode: HTML5
+    mode: HTML
     encoding: UTF-8
