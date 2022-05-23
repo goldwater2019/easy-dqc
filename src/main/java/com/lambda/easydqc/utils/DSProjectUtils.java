@@ -111,7 +111,7 @@ public class DSProjectUtils {
         List<RequestHeader> headerList = new LinkedList<>();
         headerList.add(RequestHeader.builder().key("token").value(token).build());
         FormBody body = new FormBody.Builder().add("projectName", projectName)
-                .add("description", description)
+                .add("description", description == null ? "" : description)
                 .build();
 
         okhttp3.Request request = new okhttp3.Request.Builder().url(url).post(body).headers(createHeaders(headerList)).build();
@@ -185,7 +185,7 @@ public class DSProjectUtils {
         List<RequestHeader> headerList = new LinkedList<>();
         headerList.add(RequestHeader.builder().key("token").value(token).build());
         FormBody body = new FormBody.Builder().add("projectName", projectName)
-                .add("description", projectDescription)
+                .add("description", projectDescription == null ? "" : projectDescription)
                 .add("userName", "admin")
                 .build();
 
@@ -217,35 +217,9 @@ public class DSProjectUtils {
         Assert.isTrue(tDsProject.getProjectCode() != null
                         || !StringUtils.isEmpty(tDsProject.getProjectName())
                 , "either code or name should be specified");
-        List<TDsProject> tDsProjectList = queryAllProjectList();
-        boolean isExists = false;
-        TDsProject oldProject = null;
-        for (TDsProject project : tDsProjectList) {
-            if (tDsProject.getProjectCode() != null) {
-                if (project.getProjectCode() == tDsProject.getProjectCode()) {
-                    isExists = true;
-                    oldProject = project;
-                    break;
-                }
-            }
-            if (!StringUtils.isEmpty(tDsProject.getProjectName())) {
-                if (project.getProjectName().equals(tDsProject.getProjectName())) {
-                    isExists = true;
-                    oldProject = project;
-                    break;
-                }
-            }
-        }
-        if (!isExists) {
-            throw new Exception("project not exists, project code " + tDsProject.getProjectCode()
-                    + ", project name: " + tDsProject.getProjectName());
-        }
-        if (!StringUtils.isEmpty(tDsProject.getProjectName())) {
-            if (!tDsProject.getProjectName().equals(oldProject.getProjectName())) {
-                throw new Exception("invalid project, name should be " + oldProject.getProjectName() + ", not "
-                        + tDsProject.getProjectName());
-            }
-        }
+        TDsProject oldProject = findProject(tDsProject);
+        Assert.isTrue(oldProject != null, "project not exists, name: " + tDsProject.getProjectName() + "," +
+                "code: " + tDsProject.getProjectCode());
         tDsProject.setProjectCode(oldProject.getProjectCode());
 
         String url = baseUrl + UPDATE_PROJECT.replace("{code}", String.valueOf(tDsProject.getProjectCode()));
@@ -268,5 +242,39 @@ public class DSProjectUtils {
             response.close();
             throw new IOException("Unexpected code " + response);
         }
+    }
+
+    /**
+     * 根据projectCode或者projectName查找相应的project
+     * 如果code和name不相匹配,则报错
+     *
+     * @param dsProject
+     * @return
+     * @throws Exception
+     */
+    public TDsProject findProject(TDsProject dsProject) throws Exception {
+        TDsProject oldProject = null;
+        List<TDsProject> tDsProjectList = queryAllProjectList();
+        for (TDsProject project : tDsProjectList) {
+            if (dsProject.getProjectCode() != null) {
+                if (dsProject.getProjectCode() == project.getProjectCode()) {
+                    oldProject = project;
+                    break;
+                }
+            } else if (!StringUtils.isEmpty(dsProject.getProjectName())) {
+                if (dsProject.getProjectName().equals(project.getProjectName())) {
+                    oldProject = project;
+                    break;
+                }
+            }
+        }
+        // 同时指定的情况下, 确保能够正常拿到数据(保持一致性)
+        if (dsProject.getProjectCode() != null && !StringUtils.isEmpty(dsProject.getProjectName())) {
+            if (oldProject != null && !dsProject.getProjectName().equals(oldProject.getProjectName())) {
+                throw new Exception("project code and name not matched, code: " + dsProject.getProjectCode() + "," +
+                        "name: " + dsProject.getProjectName());
+            }
+        }
+        return oldProject;
     }
 }

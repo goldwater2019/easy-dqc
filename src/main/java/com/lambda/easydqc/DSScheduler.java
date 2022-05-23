@@ -1,7 +1,11 @@
 package com.lambda.easydqc;
 
+import com.alibaba.fastjson.JSONObject;
+import com.lambda.easydqc.entity.ProcessDefinition;
 import com.lambda.easydqc.entity.TDsProject;
+import com.lambda.easydqc.entity.TDsWorkflowV1;
 import com.lambda.easydqc.utils.DSProjectUtils;
+import com.lambda.easydqc.utils.DSWorkFlowUtils;
 import lombok.Builder;
 import lombok.Data;
 
@@ -43,5 +47,29 @@ public class DSScheduler {
         for (TDsProject project : tDsProjectList) {
             System.out.println(project);
         }
+
+        // 创建一个空的workflow
+        DSWorkFlowUtils dsWorkFlowUtils = DSWorkFlowUtils.builder()
+                .token(token)
+                .baseUrl(baseUrl)
+                .build();
+        TDsWorkflowV1 tDsWorkflowV1 = TDsWorkflowV1.builder()
+                .processDefinition(
+                        ProcessDefinition.builder()
+                                .projectName("xinsen-api")
+                                .tenantCode("hive01")
+                                .processDescription("API接口测试")
+                                .processName("api-quickstart")
+                                .build()
+                )
+                .processTaskRelationList(null)
+                .taskDefinitionList(null)
+                .build();
+        List<TDsWorkflowV1> tDsWorkflowV1List = dsWorkFlowUtils.queryAllWorkflowList(TDsProject.builder()
+                .projectName("xinsen-api").build());
+        for (TDsWorkflowV1 dsWorkflowV1 : tDsWorkflowV1List) {
+            System.out.println(JSONObject.toJSON(dsWorkflowV1));
+        }
+        dsWorkFlowUtils.createEmptyWorkflow(tDsWorkflowV1, true);
     }
 }
